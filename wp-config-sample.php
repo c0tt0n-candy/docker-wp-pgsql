@@ -8,7 +8,7 @@
  *
  * このファイルは、以下の設定を含みます。
  *
- * * MySQL 設定
+ * * PostgreSQL 設定
  * * 秘密鍵
  * * データベーステーブル接頭辞
  * * ABSPATH
@@ -27,17 +27,17 @@
 // ** Heroku Postgres settings - from Heroku Environment ** //
 $db = parse_url($_ENV["DATABASE_URL"]);
 
-// ** MySQL 設定 - この情報はホスティング先から入手してください。 ** //
+// ** PostgreSQL 設定 - この情報はホスティング先から入手してください。 ** //
 /** WordPress のためのデータベース名 */
 define('DB_NAME', trim($db["path"],"/"));
 
-/** MySQL データベースのユーザー名 */
+/** PostgreSQL データベースのユーザー名 */
 define('DB_USER', $db["user"]);
 
-/** MySQL データベースのパスワード */
+/** PostgreSQL データベースのパスワード */
 define('DB_PASSWORD', $db["pass"]);
 
-/** MySQL のホスト名 */
+/** PostgreSQL のホスト名 */
 define('DB_HOST', $db["host"]);
 
 /** データベースのテーブルを作成する際のデータベースの文字セット */
