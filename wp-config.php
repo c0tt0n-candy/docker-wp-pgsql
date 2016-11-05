@@ -14,8 +14,6 @@
  * @package WordPress
  */
 
-$_SERVER['HTTPS'] = 'on';
-
 // ** Heroku Postgres settings - from Heroku Environment ** //
 $db = parse_url($_ENV["DATABASE_URL"]);
 
@@ -30,7 +28,7 @@ define('DB_USER', $db["user"]);
 define('DB_PASSWORD', $db["pass"]);
 
 /** MySQL hostname */
-define('DB_HOST', $db["host"] . ':' . $db["port"]);
+define('DB_HOST', $db["host"]);
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
@@ -47,7 +45,6 @@ define('DB_COLLATE', '');
  *
  * @since 2.6.0
  */
-
 define('AUTH_KEY',              getenv('AUTH_KEY'));
 define('SECURE_AUTH_KEY',       getenv('SECURE_AUTH_KEY'));
 define('LOGGED_IN_KEY',         getenv('LOGGED_IN_KEY'));
