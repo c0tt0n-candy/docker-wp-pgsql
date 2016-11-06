@@ -4,6 +4,8 @@ FROM php:7.0-apache
 RUN apt-get update && apt-get install -y \
 	libpng12-dev \
 	libjpeg-dev \
+	libpq-dev \
+	postgresql \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-configure \
 	gd \
@@ -11,7 +13,10 @@ RUN apt-get update && apt-get install -y \
 	--with-jpeg-dir=/usr \
 	&& docker-php-ext-install \
 	gd \
-	mysqli \
+	mbstring \
+	pdo \
+	pdo_pgsql \
+	pgsql \
 	opcache
 
 # set recommended PHP.ini settings
