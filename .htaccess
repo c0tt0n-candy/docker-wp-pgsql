@@ -1,3 +1,8 @@
 # BEGIN WordPress
 
+<Files debug.log>
+Order allow,deny
+Deny from all
+</Files>
+
 # END WordPress
