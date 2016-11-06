@@ -30,7 +30,10 @@ RUN { \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
-RUN a2enmod rewrite expires
+RUN echo ServerName $HOSTNAME > /etc/apache2/conf-available/fqdn.conf && \
+	a2enconf fqdn && \
+	a2enmod rewrite expires && \
+	service apache2 restart
 
 ENV WORDPRESS_VERSION 4.6.1
 ENV WORDPRESS_SHA1 027e065d30a64720624a7404a1820e6c6fff1202
