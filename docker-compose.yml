@@ -1,0 +1,33 @@
+version: '2'
+services:
+
+  datastore:
+    image: busybox
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  postgres:
+    image: postgres:9.5.4
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: wordpress
+      POSTGRES_PASSWORD: wordpress
+      POSTGRES_DB: wordpress
+    volumes_from:
+      - datastore
+
+  wordpress:
+    build: .
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8080:80"
+    links:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://wordpress:wordpress@postgres:5432/wordpress
+
+volumes:
+  postgres-data:
+    driver: local
