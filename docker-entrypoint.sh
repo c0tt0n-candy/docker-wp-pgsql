@@ -6,22 +6,21 @@ clean_url="${DATABASE_URL//\'}"
 proto="$(echo $clean_url | grep :// | sed -e's,^\(.*://\).*,\1,g')"
 url="$(echo ${clean_url/$proto/})"
 user_pass="$(echo $url | grep @ | cut -d@ -f1)"
-pass="$(echo $user_pass | cut -d: -f2)"
-user="$(echo ${user_pass/:$pass})"
+POSTGRES_ENV_POSTGRES_PASSWORD="$(echo $user_pass | cut -d: -f2)"
+POSTGRES_ENV_POSTGRES_USER="$(echo ${user_pass/:$POSTGRES_ENV_POSTGRES_PASSWORD})"
 host_port="$(echo ${url/$user_pass@/} | cut -d/ -f1)"
-port="$(echo $host_port | sed -e 's,^.*:,:,g' -e 's,.*:\([0-9]*\).*,\1,g' -e 's,[^0-9],,g')"
-host="$(echo ${host_port/:$port/} | cut -d/ -f1)"
-db_name="$(echo $url | grep / | cut -d/ -f2-)"
+POSTGRES_PORT_5432_TCP="$(echo $host_port | sed -e 's,^.*:,:,g' -e 's,.*:\([0-9]*\).*,\1,g' -e 's,[^0-9],,g')"
+POSTGRES_ENV_POSTGRES_DB="$(echo $url | grep / | cut -d/ -f2-)"
 
 if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
-	: "${WORDPRESS_DB_HOST:=mysql}"
-	# if we're linked to MySQL and thus have credentials already, let's use them
-	: ${WORDPRESS_DB_USER:=${MYSQL_ENV_MYSQL_USER:-root}}
-	if [ "$WORDPRESS_DB_USER" = 'root' ]; then
-		: ${WORDPRESS_DB_PASSWORD:=$MYSQL_ENV_MYSQL_ROOT_PASSWORD}
+	: "${WORDPRESS_DB_HOST:=postgres}"
+	# if we're linked to PostgresSQL and thus have credentials already, let's use them
+	: ${WORDPRESS_DB_USER:=${POSTGRES_ENV_POSTGRES_USER:-postgres}}
+	if [ "$WORDPRESS_DB_USER" = 'postgres' ]; then
+		: ${WORDPRESS_DB_PASSWORD:=$POSTGRES_ENV_POSTGRES_PASSWORD}
 	fi
-	: ${WORDPRESS_DB_PASSWORD:=$MYSQL_ENV_MYSQL_PASSWORD}
-	: ${WORDPRESS_DB_NAME:=${MYSQL_ENV_MYSQL_DATABASE:-wordpress}}
+	: ${WORDPRESS_DB_PASSWORD:=$POSTGRES_ENV_POSTGRES_PASSWORD}
+	: ${WORDPRESS_DB_NAME:=${POSTGRES_ENV_POSTGRES_DB:-wordpress}}
 
 	if [ -z "$WORDPRESS_DB_PASSWORD" ]; then
 		echo >&2 'error: missing required WORDPRESS_DB_PASSWORD environment variable'
