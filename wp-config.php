@@ -82,6 +82,8 @@ if ( WP_DEBUG ) {
 	@ini_set('display_errors',0);
 }
 
+define('AUTOMATIC_UPDATER_DISABLED', true);
+
 /* That's all, stop editing! Happy blogging. */
 
 /** Absolute path to the WordPress directory. */
