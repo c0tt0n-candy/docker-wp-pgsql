@@ -1,6 +1,18 @@
 #!/bin/bash
 set -e
 
+# get postgres infomartion from DATABASE_URL
+clean_url="${DATABASE_URL//\'}"
+proto="$(echo $clean_url | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+url="$(echo ${clean_url/$proto/})"
+user_pass="$(echo $url | grep @ | cut -d@ -f1)"
+pass="$(echo $user_pass | cut -d: -f2)"
+user="$(echo ${user_pass/:$pass})"
+host_port="$(echo ${url/$user_pass@/} | cut -d/ -f1)"
+port="$(echo $host_port | sed -e 's,^.*:,:,g' -e 's,.*:\([0-9]*\).*,\1,g' -e 's,[^0-9],,g')"
+host="$(echo ${host_port/:$port/} | cut -d/ -f1)"
+db_name="$(echo $url | grep / | cut -d/ -f2-)"
+
 if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 	: "${WORDPRESS_DB_HOST:=mysql}"
 	# if we're linked to MySQL and thus have credentials already, let's use them
